@@ -1,144 +1,97 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>WOL 局域网唤醒面板</title>
-    <style>
-        :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --accent: #38bdf8;
-            --accent-hover: #0284c7;
-            --danger: #ef4444;
-            --danger-hover: #dc2626;
-            --text-main: #f8fafc;
-            --text-sub: #94a3b8;
-            --border: #334155;
+    <title>WOL Control Center</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                        }
+                    }
+                }
+            }
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: var(--bg-color);
-            color: var(--text-main);
-            min-height: 100vh;
-            padding: 20px 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .container { width: 100%; max-width: 480px; }
-        header { text-align: center; margin-bottom: 24px; }
-        header h1 { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
-        header p { font-size: 0.85rem; color: var(--text-sub); margin-top: 4px; }
-        
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-        .card h2 { font-size: 1.1rem; margin-bottom: 15px; color: var(--text-main); }
-        
-        .form-group { margin-bottom: 12px; }
-        label { display: block; font-size: 0.8rem; color: var(--text-sub); margin-bottom: 4px; }
-        input {
-            width: 100%;
-            padding: 10px 12px;
-            background: #0f172a;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            color: var(--text-main);
-            font-size: 0.9rem;
-            outline: none;
-        }
-        input:focus { border-color: var(--accent); }
-        
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 10px 16px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s;
-            width: 100%;
-        }
-        .btn-primary { background: var(--accent); color: #0f172a; }
-        .btn-primary:hover { background: var(--accent-hover); color: #fff; }
-        .btn-wake { background: #10b981; color: #fff; flex: 1; }
-        .btn-wake:hover { background: #059669; }
-        .btn-del { background: transparent; color: var(--danger); border: 1px solid var(--danger); width: auto; padding: 8px 12px; }
-        .btn-del:hover { background: var(--danger); color: #fff; }
-        
-        .device-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border);
-        }
-        .device-item:last-child { border-bottom: none; }
-        .device-info { display: flex; flex-direction: column; gap: 2px; }
-        .device-name { font-weight: 600; font-size: 1rem; }
-        .device-mac { font-family: monospace; font-size: 0.8rem; color: var(--text-sub); }
-        .device-actions { display: flex; gap: 8px; align-items: center; }
-        
-        #toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #334155;
-            color: #fff;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            display: none;
-            z-index: 100;
-        }
-    </style>
+    </script>
 </head>
-<body>
-    <div class="container">
-        <header>
-            <h1>⚡ WOL 远程唤醒面板</h1>
-            <p>Android Termux 挂机服务器</p>
+<body class="bg-slate-950 text-slate-100 min-h-screen py-6 px-4 font-sans antialiased">
+
+    <div class="max-w-md mx-auto space-y-5">
+        <!-- Header -->
+        <header class="text-center space-y-1">
+            <h1 class="text-2xl font-bold tracking-tight text-sky-400 flex items-center justify-center gap-2">
+                <span>⚡</span> WOL Control Center
+            </h1>
+            <p class="text-xs text-slate-400 font-medium">Termux Local Gateway Server</p>
         </header>
 
-        <div class="card">
-            <h2>➕ 添加新设备</h2>
-            <div class="form-group">
-                <label>设备名称</label>
-                <input type="text" id="devName" placeholder="如: 主电脑 / NAS">
+        <!-- Add Device Card -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
+            <h2 class="text-base font-semibold text-slate-200 flex items-center gap-2">
+                <span>➕</span> Add New Device
+            </h2>
+            
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Device Name</label>
+                    <input type="text" id="devName" placeholder="e.g. Windows Workstation"
+                           class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition">
+                </div>
+
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="block text-xs font-medium text-slate-400">IP Address</label>
+                        <span class="text-[10px] uppercase font-semibold tracking-wider text-slate-500 bg-slate-800/60 px-1.5 py-0.5 rounded">Optional</span>
+                    </div>
+                    <input type="text" id="devIp" placeholder="e.g. 192.168.1.100"
+                           class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">MAC Address</label>
+                    <input type="text" id="devMac" placeholder="e.g. AA:BB:CC:DD:EE:FF"
+                           class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition">
+                </div>
             </div>
-            <div class="form-group">
-                <label>MAC 地址</label>
-                <input type="text" id="devMac" placeholder="如: AA:BB:CC:DD:EE:FF">
-            </div>
-            <button class="btn btn-primary" onclick="addDevice()">保存设备</button>
+
+            <button onclick="addDevice()" 
+                    class="w-full py-2.5 px-4 bg-sky-500 hover:bg-sky-400 text-slate-950 font-semibold text-sm rounded-xl transition shadow-lg shadow-sky-500/10 active:scale-[0.98]">
+                Save Device
+            </button>
         </div>
 
-        <div class="card">
-            <h2>💻 设备列表</h2>
-            <div id="deviceList">加载中...</div>
+        <!-- Device List Card -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
+            <h2 class="text-base font-semibold text-slate-200 flex items-center gap-2">
+                <span>💻</span> Devices
+            </h2>
+            
+            <div id="deviceList" class="divide-y divide-slate-800/80">
+                <p class="text-slate-500 text-sm text-center py-4">Loading devices...</p>
+            </div>
         </div>
     </div>
 
-    <div id="toast"></div>
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 px-5 py-2.5 bg-slate-800 text-slate-100 border border-slate-700 text-xs font-medium rounded-full shadow-2xl transition-all duration-300 opacity-0 pointer-events-none z-50 whitespace-nowrap">
+    </div>
 
     <script>
         function showToast(msg) {
             const t = document.getElementById('toast');
             t.innerText = msg;
-            t.style.display = 'block';
-            setTimeout(() => { t.style.display = 'none'; }, 2500);
+            t.classList.remove('opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                t.classList.add('opacity-0', 'pointer-events-none');
+            }, 2500);
         }
 
         async function fetchDevices() {
@@ -148,61 +101,121 @@
                 const listEl = document.getElementById('deviceList');
                 
                 if (devices.length === 0) {
-                    listEl.innerHTML = '<p style="color:var(--text-sub); text-align:center;">暂无设备，请在上方添加。</p>';
+                    listEl.innerHTML = '<p class="text-slate-500 text-sm text-center py-6">No devices found. Add one above.</p>';
                     return;
                 }
 
-                listEl.innerHTML = devices.map((d, index) => `
-                    <div class="device-item">
-                        <div class="device-info">
-                            <span class="device-name">${d.name}</span>
-                            <span class="device-mac">${d.mac}</span>
+                listEl.innerHTML = devices.map((d, index) => {
+                    const hasIp = Boolean(d.ip && d.ip.trim());
+                    
+                    let statusHtml = '';
+                    if (hasIp) {
+                        statusHtml = `
+                            <span id="status-${index}" class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium bg-slate-800 text-slate-400 border border-slate-700/50 shrink-0">
+                                <span class="w-1.5 h-1.5 rounded-full bg-slate-400 animate-pulse"></span> Checking...
+                            </span>`;
+                    } else {
+                        statusHtml = `
+                            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20 shrink-0">
+                                <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> No IP
+                            </span>`;
+                    }
+
+                    return `
+                        <div class="py-4 first:pt-0 last:pb-0 space-y-2.5">
+                            <!-- Top Row: Name and Status Badge -->
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="font-semibold text-sm text-slate-100 break-words leading-tight">${d.name}</span>
+                                ${statusHtml}
+                            </div>
+                            
+                            <!-- Bottom Row: Details and Action Buttons -->
+                            <div class="flex items-end justify-between gap-2 pt-1">
+                                <div class="text-[11px] font-mono text-slate-400 tracking-tight leading-relaxed">
+                                    ${d.ip ? `<div class="text-slate-300 font-sans">${d.ip}</div>` : ''}
+                                    <div class="text-slate-500">${d.mac}</div>
+                                </div>
+                                <div class="flex items-center gap-2 shrink-0">
+                                    <button onclick="wakeDevice('${d.mac}')" 
+                                            class="px-3.5 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 active:bg-emerald-500/30 text-emerald-400 border border-emerald-500/20 rounded-xl text-xs font-semibold transition active:scale-95">
+                                        Wake
+                                    </button>
+                                    <button onclick="deleteDevice(${index})" 
+                                            class="px-3 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 active:bg-rose-500/30 text-rose-400 border border-rose-500/20 rounded-xl text-xs font-semibold transition active:scale-95">
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                        <div class="device-actions">
-                            <button class="btn btn-wake" onclick="wakeDevice('${d.mac}')">唤醒</button>
-                            <button class="btn btn-del" onclick="deleteDevice(${index})">删除</button>
-                        </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
+
+                devices.forEach((d, index) => {
+                    if (d.ip && d.ip.trim()) checkStatus(d.ip, index);
+                });
+
             } catch (e) {
-                document.getElementById('deviceList').innerHTML = '<p style="color:var(--danger); text-align:center;">加载失败，请刷新页面</p>';
+                document.getElementById('deviceList').innerHTML = '<p class="text-rose-400 text-sm text-center py-4">Failed to load devices.</p>';
+            }
+        }
+
+        async function checkStatus(ip, index) {
+            const statusEl = document.getElementById(`status-${index}`);
+            if (!statusEl) return;
+
+            try {
+                const res = await fetch(`/api/ping?ip=${ip}`);
+                const data = await res.json();
+                
+                if (data.online) {
+                    statusEl.className = 'inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0';
+                    statusEl.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)]"></span> Online';
+                } else {
+                    statusEl.className = 'inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium bg-rose-500/10 text-rose-400 border border-rose-500/20 shrink-0';
+                    statusEl.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span> Offline';
+                }
+            } catch (e) {
+                statusEl.className = 'inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium bg-slate-800 text-slate-400 border border-slate-700/50 shrink-0';
+                statusEl.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span> Unknown';
             }
         }
 
         async function addDevice() {
             const name = document.getElementById('devName').value.trim();
+            const ip = document.getElementById('devIp').value.trim();
             const mac = document.getElementById('devMac').value.trim();
             
             if (!name || !mac) {
-                showToast("⚠️ 请填写完整的名称和 MAC 地址");
+                showToast("⚠️ Device Name and MAC Address are required");
                 return;
             }
 
             const res = await fetch('/api/devices', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, mac })
+                body: JSON.stringify({ name, ip, mac })
             });
 
             if (res.ok) {
                 document.getElementById('devName').value = '';
+                document.getElementById('devIp').value = '';
                 document.getElementById('devMac').value = '';
-                showToast("✅ 设备添加成功");
+                showToast("✅ Device added successfully");
                 fetchDevices();
             }
         }
 
         async function deleteDevice(index) {
-            if (!confirm("确定要删除该设备吗？")) return;
+            if (!confirm("Are you sure you want to delete this device?")) return;
             const res = await fetch(`/api/devices?index=${index}`, { method: 'DELETE' });
             if (res.ok) {
-                showToast("🗑️ 设备已删除");
+                showToast("🗑️ Device deleted");
                 fetchDevices();
             }
         }
 
         async function wakeDevice(mac) {
-            showToast("🚀 正在发送唤醒数据包...");
+            showToast("🚀 Sending Magic Packet...");
             const res = await fetch('/api/wake', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -210,13 +223,15 @@
             });
             const data = await res.json();
             if (data.status === 'ok') {
-                showToast("✅ 唤醒数据包发送成功！");
+                showToast("✅ Magic packet sent successfully!");
+                setTimeout(fetchDevices, 10000);
             } else {
-                showToast("❌ 发送失败: " + data.message);
+                showToast("❌ Failed: " + data.message);
             }
         }
 
         fetchDevices();
+        setInterval(fetchDevices, 10000);
     </script>
 </body>
 </html>

@@ -27,3 +27,19 @@ git config --global user.email "jingcheng070@gmail.com"
 
 ## 6. Install python
 apt update && apt install -y python3
+
+## 7. Install iputils-ping
+apt update && apt install -y iputils-ping
+
+
+# To Enable ping window  (run as admin)
+New-NetFirewallRule -DisplayName "Allow ICMPv4 Inbound" -Direction Inbound -Action Allow -Protocol ICMPv4 -Profile Any
+
+# To Remove ping on window
+Remove-NetFirewallRule -DisplayName "Allow ICMPv4 Inbound"
+
+# Temporary disable
+Set-NetFirewallRule -DisplayName "Allow ICMPv4 Inbound" -Enabled False
+
+# Temporary enable
+Set-NetFirewallRule -DisplayName "Allow ICMPv4 Inbound" -Enabled True

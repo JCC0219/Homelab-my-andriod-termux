@@ -1,6 +1,7 @@
 [
-  {
-    "name": "My Window Desktop",
-    "mac": "A8:A1:59:A6:7D:7F"
-  }
+    {
+        "name": "My Window Desktop",
+        "mac": "A8:A1:59:A6:7D:7F",
+        "ip": "100.96.0.8"
+    }
 ]
